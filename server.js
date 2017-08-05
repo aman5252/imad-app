@@ -21,11 +21,55 @@ var articleone={
                This is the content for my first article.This is the content for my first article.This is the content for my first article.This is the content for my first article.This is the content for my first article.
            </p>`
 };
+function createTemplate (data){
+    var title=data.title;
+    var heading=data.heading;
+    var date=data.date;
+    var content=data.content;
+}
+var htmlTemplate =`
+<html>
+    <head>
+        <title>
+            {title}
+        </title>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <style>
+          .container{
+              max-width: 800px;
+              margin: 0auto;
+              color: grey;
+              font-family: sans-serif;
+              padding-top: 60px;
+              padding-left: 20px;
+              padding-right: 20px;
+          }
+        </style>
+   </head>
+           <body>
+       <div>
+           <a href="/">Home</a>
+       </div>
+        <hr/>
+        <h3>
+           {heading}
+       </h3>
+        <div>
+            {date}
+        </div>
+        <div>
+            ${content}
+        </div>
+    </body>
+</html> 
+`;
+return htmlTemplate;
+}
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));
 });
 app.get('/article-one', function (req, res){
-    res.sendFile(path.join(__dirname, 'ui', 'article-one.html'));
+    res.sendFile(createTemplate(articleone));
 });
 app.get('/article-two', function (req, res){
     res.send('Article two will be served here');
