@@ -5,9 +5,9 @@ var path = require('path');
 var app = express();
 app.use(morgan('combined'));
 
-
-var articleone={
-     title:     ' Article one | Amanpreet Singh',
+var articles = {
+   ` article-one`  :{
+        title:     ' Article one | Amanpreet Singh',
      heading:   ' Article one',
      date:       ' 4 August,2017',
      content: `
@@ -20,13 +20,36 @@ var articleone={
            <p>
                This is the content for my first article.This is the content for my first article.This is the content for my first article.This is the content for my first article.This is the content for my first article.
            </p>`
+    },
+    `article-two` : {
+        title:     ' Article two | Amanpreet Singh',
+     heading:   ' Article two',
+     date:       ' 5 August,2017',
+     content: `
+    
+           <p>
+               This is the content for my second article.
+           </p>`
+    },
+    `article-three` :{
+         title:     ' Article three | Amanpreet Singh',
+         heading:   ' Article three',
+         date:       ' 5 August,2017',
+         content: `
+    
+           <p>
+               This is the content for my third article.
+           </p>`
+    }
+    
 };
+
 function createTemplate (data){
     var title=data.title;
     var heading=data.heading;
     var date=data.date;
     var content=data.content;
-}
+
 var htmlTemplate =`
 <html>
     <head>
@@ -61,22 +84,18 @@ var htmlTemplate =`
             ${content}
         </div>
     </body>
-</html> 
-`;
+</html> `;
+
 return htmlTemplate;
 }
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'index.html'));
 });
-app.get('/article-one', function (req, res){
-    res.sendFile(createTemplate(articleone));
+app.get('/:articlename', function (req, res){
+    var articlename=req.params.articlenmae;
+    res.send(createTemplate(articles[articlename]));
 });
-app.get('/article-two', function (req, res){
-    res.send('Article two will be served here');
-});
-app.get('/article-three', function (req, res){
-    res.send('Article three will be served here');
-});
+
 
 app.get('/ui/style.css', function (req, res) {
   res.sendFile(path.join(__dirname, 'ui', 'style.css'));
