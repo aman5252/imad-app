@@ -32,8 +32,7 @@ button.onclick=function()
   request.open('GET','http://apsmiglani.imad.hasura-app.io/counter',true);
   request.send(null);
 };
-var nameInput=document.getElementById('name');
-var nameInput=nameInput.value;
+
 var submit=document.getElementById('submit_btn');
 submit.onclick=function()
 {
@@ -57,6 +56,8 @@ var request=new XMLHttpRequest();
         }
     }
   };
+  var ul=document.getElementById('namelist');
+    ul.innerHTML=list;
   request.open('GET','http://apsmiglani.imad.hasura-app.io/submit-name?name='+name,true);
   request.send(null);
    
