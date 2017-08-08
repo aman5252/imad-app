@@ -25,10 +25,10 @@ button.onclick=function()
         {
             var counter=request.responseText;
             var span=document.getElementById('count');
-            span.innerHtml=counter.toString();
+            span.innerHTML=counter.toString();
         }
     }
   };
-  request.open('Get','http://apsmiglani.imad.hasura-app.io/counter',true);
+  request.open('GET','http://apsmiglani.imad.hasura-app.io/counter',true);
   request.send(null);
 };
