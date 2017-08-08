@@ -120,8 +120,8 @@ app.get('/submit-name/:name', function (req, res) {
   
   names.push(name);
   ///Json:
-  res.send(JSON.string(names));
-  res.send(names);
+  res.send(JSON.stringfy(names));
+  
   
 });
 
