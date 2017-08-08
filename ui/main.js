@@ -19,12 +19,12 @@ button.onclick=function()
   var request=new XMLHttpRequest();
   request.onreadystatechange=function()
   {
-    if(request.readyState==XMLHttpRequest.DONE)
+    if(request.readyState === XMLHttpRequest.DONE)
     {
         if(request.status==200)
         {
             var counter=request.responseText;
-            var span=documen.getElementById('count');
+            var span=document.getElementById('count');
             span.innerHtml=counter.toString();
         }
     }
