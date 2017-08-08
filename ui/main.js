@@ -32,7 +32,7 @@ button.onclick=function()
   request.open('GET','http://apsmiglani.imad.hasura-app.io/counter',true);
   request.send(null);
 };
-var submit=document.getElementById('name');
+var nameInput=document.getElementById('name');
 var nameInput=nameInput.value;
 var submit=document.getElementById('submit_btn');
 submit.onclick=function()
