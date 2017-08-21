@@ -3,6 +3,8 @@ var morgan = require('morgan');
 var path = require('path');
 var Pool = require('pg').Pool;
 var crypto=require('crypto');
+var bodyParser=require('body-parser');
+
 var config={
     user: 'apsmiglani',
    database: 'apsmiglani',
@@ -14,7 +16,7 @@ var config={
 
 var app = express();
 app.use(morgan('combined'));
-
+app.use(bodyParser.json());
 var articles={
     
    'article-one'  : {
@@ -106,11 +108,52 @@ function hash(input,salt)
 {
     // How do we create a hash?
     var hashed=crypto.pbkdf2Sync(input,salt,10000,512,'shah512');
-    return["pbkdf2","10000",salt,hashed.toString('hex')].join('5');
+    return["pbkdf2","10000",salt,hashed.toString('hex')].join('$');
 }
 app.get('/hash/:input', function (req, res){
    var hashedString =hash(req.params.input,'this-is-some-random-string');
    res.send(hashedString);
+});
+app.post('/create-user',function(req,res){
+   //username,password
+   //JSON
+   var username=req.body.username;
+   var password=req.body.password;
+   var salt=crypto.randomBytes(128).toString('hex');
+   var dbString=hash(password,salt);
+   pool.query('INSERT INTO "user"(username,password) VALUES ($1,$2)',[USERNAME,dbString],function(err,result){
+     if(err) {
+         res.status(500).send(err.toString());
+     }
+     else{
+         res.send('user successfully created:'+username);
+     }   
+   });
+});
+app.post('/login',function(req,res){
+  var username=req.body.username;
+   var password=req.body.password;  
+    pool.query('SELECT * from "user" username=$1',[username],function(err,result){
+     if(err) {
+         res.status(500).send(err.toString());
+     }
+     else{
+         if(result.rows.length===0){
+             res.send(403).send('username/password is invalid');
+         }
+         else{
+             //match the password
+             var dbString=result.rows[0].password;
+             var salt=dbString.split('$')[2];
+             var hashedPassword=hash(password,salt);//creating a hash based on the password submitted and the original salt
+             if(hashedPassword==dbString){
+         res.send('credentials correct!');
+     } else{
+         res.send(403).send('username/password is invalid');
+     }
+     }
+     }
+   });
 });
 var pool=new Pool(config);
 app.get('/test-db', function (req, res) {
