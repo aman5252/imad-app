@@ -106,7 +106,7 @@ function hash(input,salt)
 {
     // How do we create a hash?
     var hashed=crypto.pbkdf2Sync(input,salt,10000,512,'shah512');
-    return hashed.toString('hex');
+    return["pbkdf2","10000",salt,hashed.toString('hex')].join('5');
 }
 app.get('/hash/:input', function (req, res){
    var hashedString =hash(req.params.input,'this-is-some-random-string');
