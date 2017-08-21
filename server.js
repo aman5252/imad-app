@@ -4,7 +4,7 @@ var path = require('path');
 var Pool = require('pg').Pool;
 var crypto=require('crypto');
 var bodyParser=require('body-parser');
-
+var session=require('express-session');
 var config={
     user: 'apsmiglani',
    database: 'apsmiglani',
@@ -17,6 +17,10 @@ var config={
 var app = express();
 app.use(morgan('combined'));
 app.use(bodyParser.json());
+app.use(session({
+    secret:'someRamndomSecretValue',
+    cookie:{ maxAge:1000*60*60*24*30}
+}));
 var articles={
     
    'article-one'  : {
@@ -147,6 +151,11 @@ app.post('/login',function(req,res){
              var salt=dbString.split('$')[2];
              var hashedPassword=hash(password,salt);//creating a hash based on the password submitted and the original salt
              if(hashedPassword==dbString){
+              //set the session
+              req.session.outh={userId: result.rows[0].id};
+              //set cookie with a session id
+              //internally on the server side ,it maps the session id to an objecto
+              //{outh:{userid}}
          res.send('credentials correct!');
      } else{
          res.send(403).send('username/password is invalid');
@@ -155,6 +164,19 @@ app.post('/login',function(req,res){
      }
    });
 });
+app.get('/check-login',function(req,res){
+   if(req.session && req.session.outh && req.session.outh.userid){
+       res.send('You are logged in:'+req.session.outh.userId.toString());
+   } 
+   else
+   {
+       res.send('you are not logged in');
+   }
+});
+app.get('/logout',function(req,res){
+    delete req.session.outh;
+    res.send('Logged out');
+})
 var pool=new Pool(config);
 app.get('/test-db', function (req, res) {
   pool.query('SELECT * FROM test',function(err,result){
